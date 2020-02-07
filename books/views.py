@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django import views
 from books.forms import CreateBookForm
 
@@ -9,7 +9,13 @@ class ListBooks(views.View):
         return render(request, 'books/index.html', context)
 
     def post(self, request, *args, **kwargs):
-        return redirect(reverse('books:index'))
+        form = CreateBookForm(request.POST)
+        if form.is_valid():
+            context = {'message': 'Hello world'}
+            return redirect(reverse('books:index'), context)
+        else:
+            context = {'form': CreateBookForm()}
+            return render(request, 'books/form.html', context)
 
 class NewBook(views.View):
     def get(self, request, *args, **kwargs):
